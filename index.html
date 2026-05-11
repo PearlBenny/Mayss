@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Story - Framed Square</title>
+    <style>
+        :root {
+            /* Darker Beige Palette */
+            --bg-top: #d2c4b4;
+            --bg-bottom: #bcaaa4;
+            --spacing: 1.5rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Flower Petals Animation */
+        #flower-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .petal {
+            position: absolute;
+            top: -10%;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+            border-radius: 15px 0 15px 0;
+            opacity: 0.6;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(110vh) translateX(30px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Cinematic Viewer Layout & Frame */
+        .story-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 1;
+            justify-content: center;
+            width: 95vw;
+            padding: 30px 0;
+            border: 6px solid rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .viewer-container {
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            padding: 10px 0; /* مساحة إضافية للظلال */
+        }
+
+        .film-track {
+            display: flex;
+            gap: var(--spacing);
+            width: max-content;
+        }
+
+        /* Animation Directions */
+        .track-left { animation: scroll-left 35s linear infinite; }
+        .track-right { animation: scroll-right 40s linear infinite; }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-50% - (var(--spacing) / 2))); }
+        }
+
+        @keyframes scroll-right {
+            0% { transform: translateX(calc(-50% - (var(--spacing) / 2))); }
+            100% { transform: translateX(0); }
+        }
+
+        /* إطار الصور الجديد (شكل بولارويد أنيق) */
+        .frame {
+            background: #ffffff;
+            /* حواف بيضاء مع مساحة أكبر بالأسفل لإعطاء شكل الصورة الكلاسيكية */
+            padding: 8px 8px 24px 8px; 
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* ظل بارز */
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        /* تأثير بروز خفيف للصور الداخلية */
+        .frame img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            border: 1px solid #eaeaea;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="flower-bg"></div>
+
+    <div class="story-container">
+        <div class="viewer-container">
+            <div class="film-track track-left" id="filmTrack1"></div>
+        </div>
+        <div class="viewer-container">
+            <div class="film-track track-right" id="filmTrack2"></div>
+        </div>
+        <div class="viewer-container">
+            <div class="film-track track-left" id="filmTrack3"></div>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop autoplay>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // --- FLOWER ANIMATION LOGIC ---
+        function createPetals() {
+            const container = document.getElementById('flower-bg');
+            for(let i = 0; i < 20; i++) {
+                let petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.animationDuration = (Math.random() * 5 + 7) + 's';
+                petal.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(petal);
+            }
+        }
+        createPetals();
+
+        // --- IMAGES CONFIGURATION ---
+        const storyImages = [
+            { src: 'https://images.unsplash.com/photo-1470770841072-f978c04f4366?auto=format&fit=crop&q=80&w=400' },
+            { src: 'https://images.unsplash.com/photo-1418065460487-3e41a6c8e1e3?auto=format&fit=crop&q=80&w=400' },
+            { src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=400' },
+            { src: 'https://images.unsplash.com/photo-1506744626753-143d46013a7c?auto=format&fit=crop&q=80&w=400' },
+            { src: 'https://images.unsplash.com/photo-1446776811953-b23d5732162e?auto=format&fit=crop&q=80&w=400' }
+        ];
+
+        // --- RENDER LOGIC FOR 3 TRACKS ---
+        const tracks = [
+            document.getElementById('filmTrack1'),
+            document.getElementById('filmTrack2'),
+            document.getElementById('filmTrack3')
+        ];
+
+        tracks.forEach(track => {
+            let shuffled = [...storyImages].sort(() => 0.5 - Math.random());
+            let loopingSequence = [...shuffled, ...shuffled, ...shuffled, ...shuffled]; 
+
+            loopingSequence.forEach(image => {
+                const frame = document.createElement('div');
+                frame.className = 'frame';
+                const imgEl = document.createElement('img');
+                imgEl.src = image.src;
+                imgEl.loading = "lazy";
+                frame.appendChild(imgEl);
+                track.appendChild(frame);
+            });
+        });
+        
+        // Music plays automatically when the screen is touched
+        document.body.addEventListener('click', () => {
+            document.getElementById('bgMusic').play();
+        });
+        document.body.addEventListener('touchstart', () => {
+            document.getElementById('bgMusic').play();
+        });
+    </script>
+</body>
+</html>
